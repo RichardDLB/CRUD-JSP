@@ -1,0 +1,91 @@
+alumnosInsert: 
+
+Este código JSP se encarga de procesar los datos ingresados por un usuario a través de un formulario 
+web y realizar las siguientes acciones:
+
+1. Importa las clases necesarias para trabajar con bases de datos y conexiones.
+
+2. Obtiene los valores de "nombre", "apellido", "edad" e "idCurso" del formulario web.
+
+3. Verifica que "nombre" y "apellido" no sean nulos.
+
+4. Si los valores de "nombre" y "apellido" no son nulos, establece una conexión a la base 
+de datos, prepara una sentencia SQL para insertar un nuevo registro en la tabla "alumnos", 
+asigna los valores de los campos y ejecuta la inserción.
+
+5. Luego, obtiene la clave generada automáticamente (si la base de datos la genera) y muestra 
+un mensaje indicando el ID del alumno guardado en caso de éxito, o muestra un mensaje de error 
+si la inserción falla.
+
+6. En caso de que se produzca una excepción durante la inserción en la base de datos, captura 
+la excepción, la imprime en la consola y muestra un mensaje de error en la página web.
+
+En resumen, este código JSP procesa la inserción de datos de alumnos en una base de datos a 
+través de un formulario web y proporciona una respuesta al usuario sobre el resultado de la 
+operación.
+
+
+
+insertAlumno:
+
+Este código JSP se utiliza para realizar una búsqueda en una base de datos y mostrar los 
+resultados en una página web. 
+
+Importación de Clases:
+
+<%@page import="ar.org.centro8.curso.especialidad.aplicaciones.web.connectors.Connector"%>
+<%@page import="java.sql.ResultSet"%>
+
+Estas directivas importan las clases necesarias para trabajar con la conexión a la base de 
+datos y el manejo de resultados de consultas SQL.
+
+Inicialización de la Variable "buscar":
+
+String buscar = "";
+if (request.getParameter("buscar") != null) {
+    buscar = request.getParameter("buscar");
+}
+En este fragmento, se inicializa una variable llamada "buscar" como una cadena vacía. Luego, 
+se verifica si hay un parámetro llamado "buscar" enviado desde el formulario web. Si ese 
+parámetro existe, se asigna su valor a la variable "buscar". Esto permite buscar registros en 
+la base de datos que coincidan con el valor ingresado en el formulario.
+
+Consulta a la Base de Datos y Mostrar los Resultados:
+
+try (ResultSet ss = Connector.getConnection()
+                         .createStatement()
+                         .executeQuery("select * from alumnos where nombre like '%" + buscar + "%'")) {
+    while (ss.next()) {
+        out.print("<tr>");
+        out.print("<th>" + ss.getInt("id") + "</th>");
+        out.print("<td>" + ss.getString("nombre") + "</td>");
+        out.print("<td>" + ss.getString("apellido") + "</td>");
+        out.print("<td>" + ss.getString("edad") + "</td>");
+        out.print("<td>" + ss.getString("idcurso") + "</td>");
+        out.print("</tr>");
+    }
+} catch (Exception e) {
+    System.out.println(e);
+}
+En esta parte del código:
+
+Se establece una conexión a la base de datos utilizando la clase Connector.
+Se crea una sentencia SQL que selecciona todos los registros de la tabla "alumnos" donde el 
+campo "nombre" coincide parcialmente con el valor de la variable "buscar".
+Se ejecuta la consulta SQL y se obtiene un objeto ResultSet que contiene los resultados de 
+la consulta.
+Luego, se itera a través de los resultados y se muestra cada fila de datos en una tabla HTML. 
+Los campos de cada registro se imprimen en una fila de la tabla.
+Captura de Excepciones:
+
+
+catch (Exception e) {
+    System.out.println(e);
+}
+Si ocurre alguna excepción durante la ejecución de la consulta SQL o el proceso de visualización, 
+se captura la excepción y se imprime en la consola.
+
+En resumen, este código JSP permite buscar y mostrar registros de una base de datos en una página 
+web según el valor ingresado en un formulario de búsqueda. Los resultados se presentan en una 
+tabla HTML.
+
